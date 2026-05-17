@@ -639,7 +639,13 @@ function escAttr(str) {
 
 function timeAgo(dateStr) {
     if (!dateStr) return '';
-    const d = new Date(dateStr);
+    // Backend stores UTC timestamps (datetime.utcnow) — append 'Z' so
+    // the browser knows they are UTC, not local time.
+    let normalized = dateStr.trim();
+    if (!normalized.endsWith('Z') && !normalized.includes('+')) {
+        normalized = normalized.replace(' ', 'T') + 'Z';
+    }
+    const d = new Date(normalized);
     const now = new Date();
     const diffMs = now - d;
     const mins = Math.floor(diffMs / 60000);
