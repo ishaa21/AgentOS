@@ -9,6 +9,7 @@ let currentPage = 'dashboard';
 let conversationHistory = [];
 let searchTimeout = null;
 let isSending = false;
+let dataRefreshInterval = null;
 
 // ══════════ INITIALIZATION ══════════
 document.addEventListener('DOMContentLoaded', () => {
@@ -18,7 +19,47 @@ document.addEventListener('DOMContentLoaded', () => {
     checkHealth();
     loadDashboard();
     setInterval(checkHealth, 30000);
+
+    // ── Real-time polling: refresh current page data every 5 seconds ──
+    dataRefreshInterval = setInterval(refreshCurrentPage, 5000);
 });
+
+// ══════════ REAL-TIME DATA SYNC ══════════
+
+/**
+ * Refresh all data panels — called after chat tool calls so every
+ * page reflects newly created / updated / deleted items instantly.
+ */
+function refreshAllData() {
+    // Always refresh dashboard stats (counters in sidebar / overview)
+    loadDashboard();
+    // Refresh whichever detail page the user is currently viewing
+    const loaders = {
+        tasks: loadTasks,
+        calendar: loadEvents,
+        notes: loadNotes,
+        logs: loadLogs,
+        agents: loadAgents,
+    };
+    if (loaders[currentPage]) loaders[currentPage]();
+}
+
+/**
+ * Lightweight refresh for just the active page — used by the 5-second poller
+ * so the user always sees fresh data without a full page reload.
+ */
+function refreshCurrentPage() {
+    // Don't refresh while user is mid-send (avoids flicker)
+    if (isSending) return;
+    const loaders = {
+        dashboard: loadDashboard,
+        tasks: loadTasks,
+        calendar: loadEvents,
+        notes: loadNotes,
+        logs: loadLogs,
+    };
+    if (loaders[currentPage]) loaders[currentPage]();
+}
 
 // ══════════ NAVIGATION ══════════
 function initNavigation() {
@@ -213,9 +254,17 @@ async function sendMessage() {
             conversationHistory.push({ role: 'assistant', content: data.response });
             // Keep history manageable
             if (conversationHistory.length > 20) conversationHistory = conversationHistory.slice(-16);
+
+            // ── Real-time sync: refresh ALL panels after AI actions ──
+            // This ensures tasks, events, notes created via chat appear
+            // instantly on their respective pages and dashboard counters.
+            if (data.tool_calls && data.tool_calls > 0) {
+                refreshAllData();
+            } else {
+                // Even without tool calls, refresh dashboard stats
+                loadDashboard();
+            }
         }
-        // Refresh dashboard data in background
-        if (currentPage === 'dashboard') loadDashboard();
     } catch (err) {
         typing.remove();
         addChatBubble('Failed to connect to the server. Make sure the backend is running.', 'assistant');
@@ -331,6 +380,7 @@ async function saveTask() {
         }
         closeModal('taskModal');
         loadTasks();
+        loadDashboard();
     } catch { showToast('Failed to save task', 'error'); }
 }
 
@@ -340,6 +390,7 @@ async function deleteTask(id) {
         await fetch(`${API}/api/tasks/${id}`, { method: 'DELETE' });
         showToast('Task deleted', 'success');
         loadTasks();
+        loadDashboard();
     } catch { showToast('Failed to delete task', 'error'); }
 }
 
@@ -403,6 +454,7 @@ async function saveEvent() {
         showToast('Event created!', 'success');
         closeModal('eventModal');
         loadEvents();
+        loadDashboard();
     } catch { showToast('Failed to save event', 'error'); }
 }
 
@@ -412,6 +464,7 @@ async function deleteEvent(id) {
         await fetch(`${API}/api/events/${id}`, { method: 'DELETE' });
         showToast('Event deleted', 'success');
         loadEvents();
+        loadDashboard();
     } catch { showToast('Failed to delete event', 'error'); }
 }
 
@@ -465,6 +518,7 @@ async function saveNote() {
         showToast('Note saved!', 'success');
         closeModal('noteModal');
         loadNotes();
+        loadDashboard();
     } catch { showToast('Failed to save note', 'error'); }
 }
 
@@ -474,6 +528,7 @@ async function deleteNote(id) {
         await fetch(`${API}/api/notes/${id}`, { method: 'DELETE' });
         showToast('Note deleted', 'success');
         loadNotes();
+        loadDashboard();
     } catch { showToast('Failed to delete note', 'error'); }
 }
 
