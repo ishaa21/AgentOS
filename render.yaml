@@ -1,0 +1,19 @@
+# ─────────────────────────────────────────────
+# Render Blueprint — AgentOS
+# ─────────────────────────────────────────────
+# This file tells Render how to build & run the service.
+# Docs: https://render.com/docs/blueprint-spec
+
+services:
+  - type: web
+    name: agentos
+    runtime: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn multi_agent_backend:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: GOOGLE_API_KEY
+        sync: false          # You'll set this manually in the Render dashboard
+      - key: PYTHON_VERSION
+        value: "3.11.9"
+    healthCheckPath: /health

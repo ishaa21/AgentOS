@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AgentOS — Multi-Agent Task Management System</title>
+    <meta name="description"
+        content="AI-powered multi-agent system for task management, scheduling, and note-taking with MCP tool integration.">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="/static/styles.css">
+</head>
+
+<body>
+    <!-- ═══════════ SIDEBAR ═══════════ -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="logo">
+                <div class="logo-icon">
+                    <i class="fas fa-brain"></i>
+                    <div class="logo-pulse"></div>
+                </div>
+                <div class="logo-text">
+                    <span class="logo-name">AgentOS</span>
+                    <span class="logo-tagline">Multi-Agent System</span>
+                </div>
+            </div>
+            <button class="sidebar-toggle" id="sidebarToggle" aria-label="Toggle sidebar">
+                <i class="fas fa-chevron-left"></i>
+            </button>
+        </div>
+
+        <nav class="nav-menu">
+            <div class="nav-section">
+                <span class="nav-section-label">MAIN</span>
+                <a href="#" class="nav-item active" data-page="dashboard" id="nav-dashboard">
+                    <i class="fas fa-th-large"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="#" class="nav-item" data-page="chat" id="nav-chat">
+                    <i class="fas fa-robot"></i>
+                    <span>AI Chat</span>
+                    <div class="nav-badge">AI</div>
+                </a>
+            </div>
+            <div class="nav-section">
+                <span class="nav-section-label">TOOLS</span>
+                <a href="#" class="nav-item" data-page="tasks" id="nav-tasks">
+                    <i class="fas fa-tasks"></i>
+                    <span>Tasks</span>
+                </a>
+                <a href="#" class="nav-item" data-page="calendar" id="nav-calendar">
+                    <i class="fas fa-calendar-alt"></i>
+                    <span>Calendar</span>
+                </a>
+                <a href="#" class="nav-item" data-page="notes" id="nav-notes">
+                    <i class="fas fa-sticky-note"></i>
+                    <span>Notes</span>
+                </a>
+            </div>
+            <div class="nav-section">
+                <span class="nav-section-label">SYSTEM</span>
+                <a href="#" class="nav-item" data-page="agents" id="nav-agents">
+                    <i class="fas fa-network-wired"></i>
+                    <span>Agents</span>
+                </a>
+                <a href="#" class="nav-item" data-page="logs" id="nav-logs">
+                    <i class="fas fa-terminal"></i>
+                    <span>Logs</span>
+                </a>
+            </div>
+        </nav>
+
+        <div class="sidebar-footer">
+            <div class="system-status">
+                <div class="status-dot online"></div>
+                <span>System Online</span>
+            </div>
+        </div>
+    </aside>
+
+    <!-- ═══════════ MAIN CONTENT ═══════════ -->
+    <main class="main-content" id="mainContent">
+        <!-- Top Bar -->
+        <header class="top-bar">
+            <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Open menu">
+                <i class="fas fa-bars"></i>
+            </button>
+            <div class="page-title" id="pageTitle">
+                <h1>Dashboard</h1>
+                <p class="page-subtitle">System overview and statistics</p>
+            </div>
+            <div class="top-bar-actions">
+                <div class="health-indicator" id="healthIndicator">
+                    <div class="health-dot"></div>
+                    <span>Checking...</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Page Container -->
+        <div class="page-container" id="pageContainer">
+
+            <!-- ═══════════ DASHBOARD PAGE ═══════════ -->
+            <div class="page active" id="page-dashboard">
+                <div class="stats-grid">
+                    <div class="stat-card" id="stat-tasks">
+                        <div class="stat-icon tasks-icon"><i class="fas fa-tasks"></i></div>
+                        <div class="stat-info">
+                            <span class="stat-value" id="statTotalTasks">0</span>
+                            <span class="stat-label">Total Tasks</span>
+                        </div>
+                        <div class="stat-trend"><span class="stat-sub" id="statPendingTasks">0 pending</span></div>
+                    </div>
+                    <div class="stat-card" id="stat-events">
+                        <div class="stat-icon events-icon"><i class="fas fa-calendar-check"></i></div>
+                        <div class="stat-info">
+                            <span class="stat-value" id="statTotalEvents">0</span>
+                            <span class="stat-label">Total Events</span>
+                        </div>
+                        <div class="stat-trend"><span class="stat-sub" id="statTodayEvents">0 today</span></div>
+                    </div>
+                    <div class="stat-card" id="stat-notes">
+                        <div class="stat-icon notes-icon"><i class="fas fa-sticky-note"></i></div>
+                        <div class="stat-info">
+                            <span class="stat-value" id="statTotalNotes">0</span>
+                            <span class="stat-label">Total Notes</span>
+                        </div>
+                        <div class="stat-trend"><span class="stat-sub">Knowledge Base</span></div>
+                    </div>
+                    <div class="stat-card" id="stat-actions">
+                        <div class="stat-icon actions-icon"><i class="fas fa-bolt"></i></div>
+                        <div class="stat-info">
+                            <span class="stat-value" id="statAgentActions">0</span>
+                            <span class="stat-label">Agent Actions</span>
+                        </div>
+                        <div class="stat-trend"><span class="stat-sub">Total Executed</span></div>
+                    </div>
+                </div>
+
+                <div class="dashboard-grid">
+                    <div class="dash-card">
+                        <div class="dash-card-header">
+                            <h3><i class="fas fa-clock"></i> Recent Tasks</h3>
+                            <button class="btn-ghost" onclick="navigateTo('tasks')">View All</button>
+                        </div>
+                        <div class="dash-card-body" id="dashRecentTasks">
+                            <div class="empty-state-sm">No tasks yet</div>
+                        </div>
+                    </div>
+                    <div class="dash-card">
+                        <div class="dash-card-header">
+                            <h3><i class="fas fa-calendar-day"></i> Upcoming Events</h3>
+                            <button class="btn-ghost" onclick="navigateTo('calendar')">View All</button>
+                        </div>
+                        <div class="dash-card-body" id="dashUpcomingEvents">
+                            <div class="empty-state-sm">No events scheduled</div>
+                        </div>
+                    </div>
+                    <div class="dash-card full-width">
+                        <div class="dash-card-header">
+                            <h3><i class="fas fa-history"></i> Recent Agent Activity</h3>
+                            <button class="btn-ghost" onclick="navigateTo('logs')">View All</button>
+                        </div>
+                        <div class="dash-card-body" id="dashRecentLogs">
+                            <div class="empty-state-sm">No agent activity yet</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ═══════════ CHAT PAGE ═══════════ -->
+            <div class="page" id="page-chat">
+                <div class="chat-container">
+                    <div class="chat-messages" id="chatMessages">
+                        <div class="chat-welcome">
+                            <div class="welcome-icon">
+                                <i class="fas fa-robot"></i>
+                                <div class="welcome-glow"></div>
+                            </div>
+                            <h2>AgentOS Orchestrator</h2>
+                            <p>I coordinate Task, Calendar, and Notes agents to help you manage your work. Try asking me
+                                to:</p>
+                            <div class="suggestion-chips">
+                                <button class="chip" onclick="sendSuggestion('Show me all my tasks')">
+                                    <i class="fas fa-list"></i> Show my tasks
+                                </button>
+                                <button class="chip"
+                                    onclick="sendSuggestion('Schedule a team meeting tomorrow at 10am')">
+                                    <i class="fas fa-calendar-plus"></i> Schedule a meeting
+                                </button>
+                                <button class="chip"
+                                    onclick="sendSuggestion('Create a high priority task: Review project proposal, due next Friday')">
+                                    <i class="fas fa-plus-circle"></i> Create a task
+                                </button>
+                                <button class="chip"
+                                    onclick="sendSuggestion('Save a note about project ideas with tags: brainstorm, planning')">
+                                    <i class="fas fa-sticky-note"></i> Save a note
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="chat-input-area">
+                        <div class="chat-input-wrapper">
+                            <textarea id="chatInput"
+                                placeholder="Ask AgentOS to manage tasks, schedule events, or save notes..."
+                                rows="1"></textarea>
+                            <button class="send-btn" id="sendBtn" onclick="sendMessage()">
+                                <i class="fas fa-paper-plane"></i>
+                            </button>
+                        </div>
+                        <div class="chat-disclaimer">AgentOS uses AI agents — always verify important details</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ═══════════ TASKS PAGE ═══════════ -->
+            <div class="page" id="page-tasks">
+                <div class="page-toolbar">
+                    <div class="toolbar-left">
+                        <div class="filter-group">
+                            <select id="taskStatusFilter" onchange="loadTasks()">
+                                <option value="all">All Status</option>
+                                <option value="pending">Pending</option>
+                                <option value="in_progress">In Progress</option>
+                                <option value="done">Done</option>
+                            </select>
+                            <select id="taskPriorityFilter" onchange="loadTasks()">
+                                <option value="all">All Priority</option>
+                                <option value="high">High</option>
+                                <option value="medium">Medium</option>
+                                <option value="low">Low</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button class="btn-primary" onclick="openTaskModal()">
+                        <i class="fas fa-plus"></i> New Task
+                    </button>
+                </div>
+                <div class="content-list" id="tasksList">
+                    <div class="empty-state">
+                        <i class="fas fa-tasks"></i>
+                        <h3>No tasks yet</h3>
+                        <p>Create your first task or ask the AI to help!</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ═══════════ CALENDAR PAGE ═══════════ -->
+            <div class="page" id="page-calendar">
+                <div class="page-toolbar">
+                    <div class="toolbar-left">
+                        <div class="filter-group">
+                            <input type="date" id="eventDateFilter" onchange="loadEvents()">
+                            <button class="btn-ghost" onclick="clearEventFilter()">
+                                <i class="fas fa-times"></i> Clear
+                            </button>
+                        </div>
+                    </div>
+                    <button class="btn-primary" onclick="openEventModal()">
+                        <i class="fas fa-plus"></i> New Event
+                    </button>
+                </div>
+                <div class="content-list" id="eventsList">
+                    <div class="empty-state">
+                        <i class="fas fa-calendar-alt"></i>
+                        <h3>No events scheduled</h3>
+                        <p>Schedule your first event or ask the AI!</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ═══════════ NOTES PAGE ═══════════ -->
+            <div class="page" id="page-notes">
+                <div class="page-toolbar">
+                    <div class="toolbar-left">
+                        <div class="filter-group">
+                            <div class="search-box">
+                                <i class="fas fa-search"></i>
+                                <input type="text" id="notesSearch" placeholder="Search notes..."
+                                    onkeyup="debounceSearch()">
+                            </div>
+                        </div>
+                    </div>
+                    <button class="btn-primary" onclick="openNoteModal()">
+                        <i class="fas fa-plus"></i> New Note
+                    </button>
+                </div>
+                <div class="content-grid" id="notesList">
+                    <div class="empty-state">
+                        <i class="fas fa-sticky-note"></i>
+                        <h3>No notes yet</h3>
+                        <p>Save your first note or ask the AI!</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ═══════════ AGENTS PAGE ═══════════ -->
+            <div class="page" id="page-agents">
+                <div class="agents-network">
+                    <div class="network-visualization" id="agentNetwork">
+                        <!-- Filled by JS -->
+                    </div>
+                </div>
+                <div class="agents-list" id="agentsList">
+                    <!-- Filled by JS -->
+                </div>
+            </div>
+
+            <!-- ═══════════ LOGS PAGE ═══════════ -->
+            <div class="page" id="page-logs">
+                <div class="page-toolbar">
+                    <div class="toolbar-left">
+                        <button class="btn-ghost" onclick="loadLogs()">
+                            <i class="fas fa-sync-alt"></i> Refresh
+                        </button>
+                    </div>
+                </div>
+                <div class="logs-container" id="logsList">
+                    <div class="empty-state">
+                        <i class="fas fa-terminal"></i>
+                        <h3>No logs yet</h3>
+                        <p>Agent activity will appear here</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- ═══════════ MODALS ═══════════ -->
+    <!-- Task Modal -->
+    <div class="modal-overlay" id="taskModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h2 id="taskModalTitle"><i class="fas fa-plus-circle"></i> New Task</h2>
+                <button class="modal-close" onclick="closeModal('taskModal')"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="taskEditId">
+                <div class="form-group">
+                    <label for="taskTitle">Task Title</label>
+                    <input type="text" id="taskTitle" placeholder="Enter task title...">
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="taskPriority">Priority</label>
+                        <select id="taskPriority">
+                            <option value="low">Low</option>
+                            <option value="medium" selected>Medium</option>
+                            <option value="high">High</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="taskStatus">Status</label>
+                        <select id="taskStatus">
+                            <option value="pending">Pending</option>
+                            <option value="in_progress">In Progress</option>
+                            <option value="done">Done</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="taskDueDate">Due Date</label>
+                    <input type="date" id="taskDueDate">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-ghost" onclick="closeModal('taskModal')">Cancel</button>
+                <button class="btn-primary" onclick="saveTask()">Save Task</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Event Modal -->
+    <div class="modal-overlay" id="eventModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h2><i class="fas fa-calendar-plus"></i> New Event</h2>
+                <button class="modal-close" onclick="closeModal('eventModal')"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="eventTitle">Event Title</label>
+                    <input type="text" id="eventTitle" placeholder="Enter event title...">
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="eventDate">Date</label>
+                        <input type="date" id="eventDate">
+                    </div>
+                    <div class="form-group">
+                        <label for="eventTime">Time</label>
+                        <input type="time" id="eventTime">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="eventDuration">Duration (minutes)</label>
+                    <input type="number" id="eventDuration" value="60" min="15" step="15">
+                </div>
+                <div class="form-group">
+                    <label for="eventAttendees">Attendees</label>
+                    <input type="text" id="eventAttendees" placeholder="Comma-separated names...">
+                </div>
+                <div class="form-group">
+                    <label for="eventNotes">Notes</label>
+                    <textarea id="eventNotes" rows="3" placeholder="Event notes..."></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-ghost" onclick="closeModal('eventModal')">Cancel</button>
+                <button class="btn-primary" onclick="saveEvent()">Save Event</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Note Modal -->
+    <div class="modal-overlay" id="noteModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h2><i class="fas fa-sticky-note"></i> New Note</h2>
+                <button class="modal-close" onclick="closeModal('noteModal')"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="noteTitle">Title</label>
+                    <input type="text" id="noteTitle" placeholder="Note title...">
+                </div>
+                <div class="form-group">
+                    <label for="noteContent">Content</label>
+                    <textarea id="noteContent" rows="6" placeholder="Write your note..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="noteTags">Tags</label>
+                    <input type="text" id="noteTags" placeholder="Comma-separated tags...">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-ghost" onclick="closeModal('noteModal')">Cancel</button>
+                <button class="btn-primary" onclick="saveNote()">Save Note</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <script src="/static/app.js"></script>
+</body>
+
+</html>
