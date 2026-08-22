@@ -10,16 +10,6 @@
 
 ---
 
-<img width="1358" height="600" alt="Dashboard View" src="https://github.com/user-attachments/assets/52a7f88a-a861-43dc-9c4e-e70be1413a00" />
-<img width="1364" height="599" alt="AI Chat Interface" src="https://github.com/user-attachments/assets/f01aabcf-b268-4442-8ac7-46f363101c0f" />
-<img width="1364" height="602" alt="Task Manager" src="https://github.com/user-attachments/assets/9aae92eb-08fc-48c4-96da-5d3de3df2c5a" />
-<img width="1363" height="599" alt="Calendar Scheduling" src="https://github.com/user-attachments/assets/571759c7-2c5c-4c24-a81f-1c60f93d6fae" />
-<img width="1365" height="601" alt="Notes Knowledge Base" src="https://github.com/user-attachments/assets/66d0740f-7092-4770-a45c-ab86ad083265" />
-<img width="1365" height="600" alt="Agent Registry" src="https://github.com/user-attachments/assets/d1b651d3-e2a0-41c2-92fd-02b42b0f1900" />
-<img width="1365" height="598" alt="System Execution Logs" src="https://github.com/user-attachments/assets/517c5d13-18cd-4d20-9f47-b6385b33a18c" />
-
----
-
 ## What is AgentOS?
 
 Most traditional AI assistants operate as single agents — processing one prompt and returning a text response. **AgentOS** introduces an orchestrator architecture that bridges natural language with multi-domain actions.
