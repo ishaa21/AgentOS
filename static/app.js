@@ -104,6 +104,7 @@ function navigateTo(page) {
 
     // Close mobile sidebar
     document.getElementById('sidebar').classList.remove('mobile-open');
+    document.getElementById('sidebarBackdrop').classList.remove('active');
 }
 
 // ══════════ SIDEBAR ══════════
@@ -113,6 +114,11 @@ function initSidebar() {
     });
     document.getElementById('mobileMenuBtn').addEventListener('click', () => {
         document.getElementById('sidebar').classList.toggle('mobile-open');
+        document.getElementById('sidebarBackdrop').classList.toggle('active');
+    });
+    document.getElementById('sidebarBackdrop').addEventListener('click', () => {
+        document.getElementById('sidebar').classList.remove('mobile-open');
+        document.getElementById('sidebarBackdrop').classList.remove('active');
     });
 }
 

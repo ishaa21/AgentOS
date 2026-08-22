@@ -59,21 +59,27 @@ from sqlalchemy.orm import DeclarativeBase, Session, sessionmaker
 # Google Gemini LLM
 # ─────────────────────────────────────────────
 
-GOOGLE_API_KEY = os.environ.get("GOOGLE_API_KEY", "")
-if GOOGLE_API_KEY:
-    genai.configure(api_key=GOOGLE_API_KEY)
+def get_api_key() -> str:
+    key = os.environ.get("GOOGLE_API_KEY", "")
+    if not key:
+        load_dotenv(override=True)
+        key = os.environ.get("GOOGLE_API_KEY", "")
+    return key
 
 
 def call_gemini(prompt: str, system_instruction: str = None) -> str:
-    if not GOOGLE_API_KEY:
+    api_key = get_api_key()
+    if not api_key:
         return "Google Gemini API key missing. Please set GOOGLE_API_KEY environment variable."
 
     try:
+        genai.configure(api_key=api_key)
         model = genai.GenerativeModel('gemini-2.5-flash', system_instruction=system_instruction)
         response = model.generate_content(prompt)
         return response.text
     except Exception as e:
         return f"AI error: {str(e)}"
+
 
 
 # ─────────────────────────────────────────────
