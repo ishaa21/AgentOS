@@ -1,42 +1,42 @@
 # AgentOS — Multi-Agent Task Management System
 
-> An orchestrator-based AI system where a single natural-language request triggers coordinated, multi-step workflows across Task, Calendar, and Notes agents — powered by Google Gemini and FastAPI.
+> An orchestrator-based AI system where a single natural-language request triggers coordinated, multi-step workflows across Task, Calendar, and Notes agents — powered by Google Gemini 2.5 Flash and FastAPI.
 
 [![Live Demo](https://img.shields.io/badge/Live%20Demo-agentos--hkc4.onrender.com-blue?style=flat-square)](https://agentos-hkc4.onrender.com)
 [![Python](https://img.shields.io/badge/Python-3.10+-3776AB?style=flat-square&logo=python&logoColor=white)](https://www.python.org/)
-[![FastAPI](https://img.shields.io/badge/FastAPI-0.100+-009688?style=flat-square&logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com/)
+[![FastAPI](https://img.shields.io/badge/FastAPI-0.115+-009688?style=flat-square&logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com/)
+[![Gemini](https://img.shields.io/badge/Gemini-2.5%20Flash-8E44AD?style=flat-square&logo=google&logoColor=white)](https://ai.google.dev/)
 [![Docker](https://img.shields.io/badge/Docker-ready-2496ED?style=flat-square&logo=docker&logoColor=white)](https://www.docker.com/)
 
 ---
-<img width="1358" height="600" alt="Screenshot 2026-05-17 094451" src="https://github.com/user-attachments/assets/52a7f88a-a861-43dc-9c4e-e70be1413a00" />
-<img width="1364" height="599" alt="Screenshot 2026-05-17 094506" src="https://github.com/user-attachments/assets/f01aabcf-b268-4442-8ac7-46f363101c0f" />
-<img width="1364" height="602" alt="Screenshot 2026-05-17 094522" src="https://github.com/user-attachments/assets/9aae92eb-08fc-48c4-96da-5d3de3df2c5a" />
-<img width="1363" height="599" alt="Screenshot 2026-05-17 094535" src="https://github.com/user-attachments/assets/571759c7-2c5c-4c24-a81f-1c60f93d6fae" />
-<img width="1365" height="601" alt="Screenshot 2026-05-17 094609" src="https://github.com/user-attachments/assets/66d0740f-7092-4770-a45c-ab86ad083265" />
-<img width="1365" height="600" alt="Screenshot 2026-05-17 094628" src="https://github.com/user-attachments/assets/d1b651d3-e2a0-41c2-92fd-02b42b0f1900" />
-<img width="1365" height="598" alt="Screenshot 2026-05-17 094640" src="https://github.com/user-attachments/assets/517c5d13-18cd-4d20-9f47-b6385b33a18c" />
 
+<img width="1358" height="600" alt="Dashboard View" src="https://github.com/user-attachments/assets/52a7f88a-a861-43dc-9c4e-e70be1413a00" />
+<img width="1364" height="599" alt="AI Chat Interface" src="https://github.com/user-attachments/assets/f01aabcf-b268-4442-8ac7-46f363101c0f" />
+<img width="1364" height="602" alt="Task Manager" src="https://github.com/user-attachments/assets/9aae92eb-08fc-48c4-96da-5d3de3df2c5a" />
+<img width="1363" height="599" alt="Calendar Scheduling" src="https://github.com/user-attachments/assets/571759c7-2c5c-4c24-a81f-1c60f93d6fae" />
+<img width="1365" height="601" alt="Notes Knowledge Base" src="https://github.com/user-attachments/assets/66d0740f-7092-4770-a45c-ab86ad083265" />
+<img width="1365" height="600" alt="Agent Registry" src="https://github.com/user-attachments/assets/d1b651d3-e2a0-41c2-92fd-02b42b0f1900" />
+<img width="1365" height="598" alt="System Execution Logs" src="https://github.com/user-attachments/assets/517c5d13-18cd-4d20-9f47-b6385b33a18c" />
 
+---
 
 ## What is AgentOS?
 
-Most "AI assistants" are single-agent — one LLM, one response. AgentOS is different.
+Most traditional AI assistants operate as single agents — processing one prompt and returning a text response. **AgentOS** introduces an orchestrator architecture that bridges natural language with multi-domain actions.
 
-A **Primary Orchestrator Agent** (Gemini) receives your natural-language request and breaks it into sub-tasks. It then routes each sub-task to the right specialist agent — Task, Calendar, or Notes — each equipped with its own set of MCP tools. All agents write to a shared SQLite database, and every action is logged for full traceability.
-
-The result: one message → a coordinated, multi-step workflow, executed autonomously.
+A **Primary Orchestrator Agent** (powered by **Google Gemini 2.5 Flash**) receives user requests, parses intent, and orchestrates actions across three specialized sub-agents: **Task Agent**, **Calendar Agent**, and **Notes Agent**. Each sub-agent is equipped with dedicated **Model Context Protocol (MCP)** tools. All agent activities synchronize across a shared database and log transparently in real time.
 
 ---
 
 ## Architecture
 
 ```
-User (natural language input)
-          │
-          ▼
+User (Natural Language Prompt)
+              │
+              ▼
 ┌─────────────────────────────┐
-│  Primary Orchestrator Agent  │  ← Google Gemini + 11 MCP tools
-└────────┬──────────┬──────────┘
+│  Primary Orchestrator Agent  │  ← Google Gemini 2.5 Flash
+└────────┬──────────┬──────────┘  └─ Orchestrates 11 MCP Tools
          │          │          │
          ▼          ▼          ▼
    ┌──────────┐ ┌──────────┐ ┌──────────┐
@@ -47,29 +47,52 @@ User (natural language input)
         └─────────────┴─────────────┘
                       │
               ┌───────▼────────┐
-              │   SQLite DB    │
+              │   SQL Database │
               │ tasks | events │
               │ notes | logs   │
               └────────────────┘
 ```
 
+### Specialized Agents & MCP Tools
+
+| Agent | Responsibility | MCP Tools |
+|-------|----------------|-----------|
+| **Primary Orchestrator** | Intent parsing, workflow planning, tool routing, response aggregation | `route_to_agent`, `aggregate_results` |
+| **Task Agent** | Task creation, status updates, deletion, priority filtering | `create_task`, `list_tasks`, `update_task`, `delete_task` |
+| **Calendar Agent** | Meeting scheduling, event listing, availability & conflict checking | `create_event`, `list_events`, `check_availability`, `delete_event` |
+| **Notes Agent** | Knowledge base creation, keyword searching, tagging | `create_note`, `list_notes`, `delete_note` |
+
 ---
 
-## Multi-Step Workflow — Example
+## Multi-Step Workflow Example
 
-**User says:**
-> "Set up project kickoff for next Monday — schedule a 2hr meeting, create prep tasks, and save an agenda note."
+**User Input:**
+> *"Set up project kickoff for next Monday — schedule a 2hr meeting, create prep tasks, and save an agenda note."*
 
-**What AgentOS does in a single `/api/chat` request:**
+**Execution via `/api/chat`:**
 
-| Step | Agent Action | MCP Tool |
-|------|-------------|----------|
-| 1 | Checks calendar for conflicts | `check_availability` |
-| 2 | Creates a 2-hour meeting event | `create_event` |
-| 3 | Creates prep tasks with priorities | `create_task` |
-| 4 | Saves the agenda as a note | `create_note` |
+| Step | Executing Agent | MCP Tool | Action Detail |
+|------|-----------------|----------|---------------|
+| 1 | **Calendar Agent** | `check_availability` | Checks scheduled events for time conflicts |
+| 2 | **Calendar Agent** | `create_event` | Schedules 2-hour "Project Kickoff" meeting |
+| 3 | **Task Agent** | `create_task` | Creates high-priority preparation tasks |
+| 4 | **Notes Agent** | `create_note` | Saves meeting agenda note in knowledge base |
 
-No second prompt. No manual switching between tools. One request, four coordinated actions.
+Everything executes in a single coordinated request without manual tool switching.
+
+---
+
+## Website Features & Navigation
+
+AgentOS provides a full web interface served directly by FastAPI:
+
+- **Dashboard**: Real-time summary displaying active tasks, events scheduled today, note counts, and total system agent execution logs via `/api/stats`.
+- **AI Chat**: Conversational interface with live execution traces showing which agents and MCP tools were triggered.
+- **Task Management**: Interactive task board with filtering by status (`pending`, `in_progress`, `done`) and priority (`low`, `medium`, `high`).
+- **Calendar & Scheduling**: View scheduled events, date filters, attendee lists, and event details.
+- **Notes / Knowledge Base**: Searchable note vault with tag indexing.
+- **Agent Registry**: Inspect active agents, their assigned models, roles, and connected MCP tools.
+- **System Execution Logs**: Full log viewer tracing every tool invocation, action payload, and status.
 
 ---
 
@@ -77,51 +100,68 @@ No second prompt. No manual switching between tools. One request, four coordinat
 
 | Layer | Technology |
 |-------|-----------|
-| AI / Orchestration | Google Gemini 1.5 Flash, MCP (11 tools) |
-| Backend | FastAPI, Python 3.10+ |
-| ORM / Database | SQLAlchemy, SQLite (PostgreSQL-ready) |
-| Frontend | Vanilla JS dashboard, served by FastAPI |
-| DevOps | Docker, Cloud Run (PORT env configurable) |
-| Agent Logging | Custom execution tracing via `/api/logs` |
-
----
-
-## Features
-
-- **Orchestrator-based routing** — Gemini decides which agent(s) to invoke based on intent
-- **11 specialized MCP tools** across Task, Calendar, and Notes domains
-- **Full CRUD REST API** — every agent domain is independently accessible
-- **Agent execution logs** — every tool call is recorded with timestamps and outcomes
-- **Interactive dashboard** — built-in frontend, zero separate deployment needed
-- **Docker + Cloud Run ready** — one-command deployment
+| **AI Engine** | Google Gemini 2.5 Flash (`gemini-2.5-flash`) |
+| **Protocol** | Model Context Protocol (11 MCP Tools) |
+| **Backend** | FastAPI, Python 3.10+, Pydantic v2, `python-dotenv` |
+| **Database & ORM** | SQLAlchemy, SQLite (bundled `agentOS.db`), PostgreSQL / AlloyDB ready |
+| **Frontend** | Vanilla JS Dashboard (CSS variables, FontAwesome, Google Fonts) |
+| **Deployment & DevOps** | Docker, Render Blueprint (`render.yaml`), Uvicorn |
 
 ---
 
 ## Quick Start
 
+### 1. Clone & Setup
+
 ```bash
-# 1. Clone the repo
+# Clone the repository
 git clone https://github.com/ishaa21/AgentOS.git
 cd AgentOS
 
-# 2. Install dependencies
+# Install dependencies
 pip install -r requirements.txt
+```
 
-# 3. Set your Google Gemini API key
-export GOOGLE_API_KEY="your_api_key_here"
+### 2. Configure Environment
 
-# 4. Run the server
+Create a `.env` file in the root directory:
+
+```env
+GOOGLE_API_KEY=your_gemini_api_key_here
+PORT=8000
+# DATABASE_URL=postgresql://user:password@localhost/agentos_db # Optional
+```
+
+### 3. Run the Backend
+
+```bash
 uvicorn multi_agent_backend:app --reload --port 8000
 ```
 
-Open **http://localhost:8000** for the dashboard, or **http://localhost:8000/docs** for the Swagger API explorer.
+Open **http://localhost:8000** in your browser to access the dashboard.  
+Interactive API docs are available at **http://localhost:8000/docs** (Swagger UI) and **http://localhost:8000/redoc**.
+
+---
+
+## Deployment
 
 ### Docker
 
 ```bash
+# Build Docker image
 docker build -t agentos .
-docker run -p 8080:8080 -e GOOGLE_API_KEY="your_api_key_here" -e PORT=8080 agentos
+
+# Run container
+docker run -p 8000:8000 -e GOOGLE_API_KEY="your_api_key_here" agentos
 ```
+
+### Render Blueprint
+
+AgentOS includes a `render.yaml` specification for zero-config Render deployment:
+
+1. Connect your repository to **Render**.
+2. Render will automatically detect `render.yaml`.
+3. Set your `GOOGLE_API_KEY` under Environment Variables in the Render dashboard.
 
 ---
 
@@ -129,14 +169,14 @@ docker run -p 8080:8080 -e GOOGLE_API_KEY="your_api_key_here" -e PORT=8080 agent
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|
-| `POST` | `/api/chat` | Main orchestrator — natural language input |
-| `GET / POST / PUT / DELETE` | `/api/tasks` | Task management |
-| `GET / POST / DELETE` | `/api/events` | Calendar scheduling |
-| `GET / POST / DELETE` | `/api/notes` | Notes / knowledge base |
-| `GET` | `/api/logs` | Agent execution trace |
-| `GET` | `/health` | System health check |
-
-Full interactive docs available at `/docs` (Swagger UI) and `/redoc`.
+| `POST` | `/api/chat` | Main orchestrator — processes natural language & coordinates agents |
+| `GET` | `/api/stats` | System statistics overview (task, event, note, log counts) |
+| `GET / POST / PUT / DELETE` | `/api/tasks` | Task CRUD endpoints (`status`, `priority`, `due_date`) |
+| `GET / POST / DELETE` | `/api/events` | Calendar CRUD endpoints (`date`, `time`, `attendees`) |
+| `GET / POST / DELETE` | `/api/notes` | Notes CRUD endpoints with keyword and tag search |
+| `GET` | `/api/logs` | Fetch execution logs for agent activity tracing |
+| `GET` | `/api/agents` | Fetch registered agents, capabilities, and MCP tool specifications |
+| `GET` | `/health` | Health check endpoint returning active sub-agent status |
 
 ---
 
@@ -144,21 +184,11 @@ Full interactive docs available at `/docs` (Swagger UI) and `/redoc`.
 
 **[https://agentos-hkc4.onrender.com](https://agentos-hkc4.onrender.com)**
 
-> Note: Hosted on Render free tier — the first load may take ~30 seconds to spin up.
-
----
-
-## Project Status
-
-This project is actively developed. Planned improvements:
-- [ ] PostgreSQL integration for production deployments
-- [ ] Authentication layer (JWT)
-- [ ] Streaming responses for long orchestrator chains
-- [ ] Memory/context persistence across sessions
+> *Note: Hosted on Render free tier — initial load may take ~30 seconds if instance is spinning up.*
 
 ---
 
 ## Author
 
 **Isha Zalavadia** — B.Tech Computer Engineering, BVM | Diploma in CE, AVPTI  
-[GitHub](https://github.com/ishaa21) · [LinkedIn](https://linkedin.com/in/isha-zalavadia) · [Portfolio](#)
+[GitHub](https://github.com/ishaa21) · [LinkedIn](https://linkedin.com/in/isha-zalavadia)
