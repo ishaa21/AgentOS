@@ -170,15 +170,7 @@ AgentOS includes a `render.yaml` specification for zero-config Render deployment
 
 ---
 
-## Live Demo
-
-**[https://agentos-hkc4.onrender.com](https://agentos-hkc4.onrender.com)**
-
-> *Note: Hosted on Render free tier — initial load may take ~30 seconds if instance is spinning up.*
-
----
-
 ## Author
 
-**Isha Zalavadia** — B.Tech Computer Engineering, BVM | Diploma in CE, AVPTI  
+**Isha Zalavadia**  
 [GitHub](https://github.com/ishaa21) · [LinkedIn](https://linkedin.com/in/isha-zalavadia)
